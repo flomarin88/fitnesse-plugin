@@ -1,5 +1,6 @@
 package hudson.plugins.fitnesse;
 
+import hudson.model.Result;
 import hudson.plugins.fitnesse.NativePageCounts.Counts;
 
 import java.util.Collection;
@@ -29,10 +30,27 @@ public class FitnesseResultsTest {
 			resultsForCounts(0, 0, 0, 0) };
 	private static final FitnesseResults[] RIGHT = new FitnesseResults[] { resultsForCounts(1, 0, 0, 0),
 			resultsForCounts(1, 0, 1, 0) };
+    private static final FitnesseResults EMPTY = resultsForCounts(0, 0, 0, 0);
 
 	private static FitnesseResults resultsForCounts(int right, int wrong, int ignored, int exceptions) {
 		return new FitnesseResults(new Counts("", "20100320184439", right, wrong, ignored, exceptions, 0, null));
 	}
+
+    @Test
+    public void getBuildResultShouldBeUnstableWhenFailCountIsGreaterThanZero() {
+        for (FitnesseResults results : WRONG) {
+            Assert.assertEquals(Result.UNSTABLE, results.getBuildResult());
+        }
+    }
+
+    @Test
+    public void getBuildResultShouldBeUnstableWhenPassCountIsEqualToZero() {
+        // When
+        Result result = EMPTY.getBuildResult();
+
+        // Then
+        Assert.assertEquals(Result.UNSTABLE, result);
+    }
 
 	@Test
 	public void wrongCountsShouldBeFailedOverall() {

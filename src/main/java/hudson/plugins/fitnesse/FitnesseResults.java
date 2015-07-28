@@ -175,7 +175,7 @@ public class FitnesseResults extends TabulatedResult implements
 
 	@Override
 	public Result getBuildResult() {
-		if (getFailCount() > 0)
+		if (getFailCount() > 0 || getPassCount() == 0)
 			return Result.UNSTABLE;
 		return null;
 	}
